@@ -1,24 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
+using System.Threading.Tasks;
+using Web.Models;
+using Web.Infrastructure.Managers;
+using System.Web.Http.Description;
+using System.Linq;
 
 namespace Web.Controllers
 {
-    using System.Web.Mvc;
-    using Infrastructure;
-    using Models;
-
     public class OrderController : ApiController
     {
         [HttpGet]
-        public IEnumerable<Order> GetOrders(int id = 1)
+        [ResponseType(typeof(IEnumerable<Order>))]
+        public async Task<IHttpActionResult> GetOrders(int id = 1)
         {
-            var data = new OrderService();
+            var orderManager = new OrderManager();
 
-            return data.GetOrdersForCompany(id);
+            var data = await orderManager.GetOrdersForCompany(id);
+
+            if (data.Count() > 0)
+            {
+                return Ok(data);
+            }
+
+            return NotFound();
         }
     }
 }

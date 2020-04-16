@@ -1,45 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace Web.Models
 {
-    using System.Security.AccessControl;
-
     public class Order
     {
+        public Order()
+        {
+            OrderProducts = new List<OrderProduct>();
+        }
+
         public int OrderId { get; set; }
 
         public string CompanyName { get; set; }
 
         public string Description { get; set; }
 
-        public decimal OrderTotal { get; set; }
+        public decimal OrderTotal { 
+            get
+            {
+                return OrderProducts.Select(orderProduct => orderProduct.Quantity * orderProduct.Price).Sum();  
+            }
+        }
 
-        public List<OrderProduct> OrderProducts { get; set; }
-
-    }
-
-
-    public class OrderProduct
-    {
-        public int OrderId { get; set; }
-
-        public int ProductId { get; set; }
-
-        public Product Product { get; set; }
-    
-        public int Quantity { get; set; }
-
-        public decimal Price { get; set; }
-
-    }
-
-    public class Product
-    {
-        public string Name { get; set; }
-
-        public decimal Price { get; set; }
+        public IList<OrderProduct> OrderProducts { get; private set; }
     }
 }
